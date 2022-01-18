@@ -1,0 +1,14 @@
+{
+  "appId": "dsc.taapg.waste",
+  "appName": "TaaPG-waste",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "cordova": {},
+  "linuxAndroidStudioPath": "/opt/android-studio-2020.3.1/android-studio/bin/studio.sh"
+}
