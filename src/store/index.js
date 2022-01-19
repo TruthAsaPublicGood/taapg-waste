@@ -3,6 +3,15 @@ import { createStore } from 'vuex';
 const store = createStore({
   state() {
     return {
+      pickups: [
+        {
+          id: 'ppl1',
+          image:
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Plastic_Tuinstoel.jpg/300px-Plastic_Tuinstoel.jpg',
+          title: 'Pickup one',
+          location: 'Good condiction desk chair',
+        },
+      ],
       items: [
         {
           id: 'm1',
@@ -29,6 +38,15 @@ const store = createStore({
     };
   },
   mutations: {
+    addPickup(state, pickupData) {
+      const newPickup = {
+        id: new Date().toISOString(),
+        title: pickupData.title,
+        image: pickupData.imageUrl,
+        description: pickupData.description
+      };
+      state.pickups.unshift(newPickup);
+    },
     addItem(state, itemData) {
       const newItem = {
         id: new Date().toISOString(),
@@ -46,6 +64,14 @@ const store = createStore({
     }
   },
   getters: {
+    pickups(state) {
+      return state.pickups;
+    },
+    pickup(state) {
+      return (memoryId) => {
+        return state.pickups.find((memory) => memory.id === memoryId);
+      };
+    },
     items(state) {
       return state.items;
     },

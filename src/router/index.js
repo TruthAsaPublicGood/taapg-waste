@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from '@ionic/vue-router';
 
 import WastePage from '../pages/WastePage.vue';
 import ItemsPage from '../pages/ItemsPage.vue';
+import PickupPage from '../pages/PickupPage.vue'
 
 const routes = [
   {
@@ -10,8 +11,20 @@ const routes = [
     // redirect: '/items'
   },
   {
+    path: '/pickups',
+    component: PickupPage
+  },
+  {
     path: '/items',
     component: ItemsPage
+  },
+  {
+    path: '/pickups/:id',
+    component: () => import('../pages/PickupDetailsPage.vue')
+  },
+  {
+    path: '/pickups/add',
+    component: () => import('../pages/AddPickupPage.vue')
   },
   {
     path: '/items/:id',
