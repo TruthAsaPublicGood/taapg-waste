@@ -7,11 +7,9 @@
       </ion-item>
       <ion-item>
         <ion-thumbnail slot="start">
-          <img :src="takenImageUrl" />
         </ion-thumbnail>
-        <ion-button type="button" fill="clear" @click="takePhoto">
-          <ion-icon slot="start" :icon="camera"></ion-icon>
-          Take Photo
+        <ion-button type="button" fill="clear" @click="takeGPS">
+          Take GPS
         </ion-button>
       </ion-item>
       <ion-item>
@@ -20,6 +18,8 @@
       </ion-item>
     </ion-list>
     <ion-button type="submit" expand="block">Save</ion-button>
+      {{ livePickupID }}
+    <ion-button @click="addItems">Add items</ion-button>
   </form>
 </template>
 
@@ -31,16 +31,13 @@ import {
   IonInput,
   IonTextarea,
   IonButton,
-  IonThumbnail,
-  IonIcon
+  IonThumbnail
 } from "@ionic/vue";
-import { camera } from 'ionicons/icons';
-import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
-
-const { Camera } = Plugins;
+import { Geolocation } from '@capacitor/geolocation';
+// import { Plugins } from '@capacitor/core';
 
 export default {
-  emits: ["save-item"],
+  emits: ["save-pickup"],
   components: {
     IonList,
     IonItem,
@@ -48,34 +45,42 @@ export default {
     IonInput,
     IonTextarea,
     IonButton,
-    IonThumbnail,
-    IonIcon
+    IonThumbnail
+  },
+  computed: {
+    livePickupID: function () {
+      return this.$store.state.currentPickup
+    }
   },
   data() {
     return {
       enteredTitle: "",
       enteredDescription: "",
-      takenImageUrl: null,
-      camera
+      imageSummary: null,
+      takenGPS: ''
     };
   },
   methods: {
-    async takePhoto() {
-      const photo = await Camera.getPhoto({
-        resultType: CameraResultType.Uri,
-        source: CameraSource.Camera,
-        quality: 60
-      });
-
-      this.takenImageUrl = photo.webPath;
+    async takeGPS() {
+      console.log('take gps start')
+      const printCurrentPosition = async () => {
+        console.log('watiings')
+        const coordinates = await Geolocation.getCurrentPosition();
+        console.log('Current position:', coordinates);
+      };
+      this.takenGPS = printCurrentPosition;
+    },
+    addItems() {
+      this.$router.replace('/items/add/:id')
     },
     submitForm() {
       const itemData = {
         title: this.enteredTitle,
-        imageUrl: this.takenImageUrl,
+        image: this.imagesummary,
+        location: this.takenGPS,
         description: this.enteredDescription,
       };
-      this.$emit("save-item", itemData);
+      this.$emit("save-pickup", itemData);
     },
   },
 };

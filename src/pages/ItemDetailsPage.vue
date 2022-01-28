@@ -1,7 +1,7 @@
 <template>
   <base-layout
     :page-title="loadedItems ? loadedItems.title : 'Loading...'"
-    page-default-back-link="/items"
+    page-default-back-link="/pickups/:id"
   >
     <h2 v-if="!loadedItems">Could not find a memory for the given id.</h2>
     <item-overview

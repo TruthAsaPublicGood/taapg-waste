@@ -1,52 +1,47 @@
 <template>
-  <div class="welcome-page">
-    <base-layout page-title="TaaPG-Waste">
-      <template v-slot:actions-end>
-        <ion-button router-link="/">
-          <ion-icon slot="icon-only" :icon="add"></ion-icon>
-        </ion-button>
-      </template>
-      <div class="collection-button">
-        <ion-button @click="newPickup">New collection</ion-button>
-      </div>
-      <div class="collection-button">
-        <ion-button @click="listPickups">Pickup history</ion-button>
-      </div>
-      <div class="footer-logo">
-        <ion-footer class="ion-no-border">
-          <ion-toolbar>
-            <ion-img :src="logoW" :alt="taaPGWaste"></ion-img>
-          </ion-toolbar>
-        </ion-footer>
-      </div>
-    </base-layout>
-  </div>
+  <base-layout page-title="TaaPG-Circular">
+    <template v-slot:actions-end>
+      <ion-button router-link="/">
+        <ion-icon slot="icon-only" :icon="add"></ion-icon>
+      </ion-button>
+    </template>
+    <div class="collection-button">
+      <ion-button @click="newPickup">New collection</ion-button>
+    </div>
+    <div class="collection-button">
+      <ion-button @click="listPickups">Pickup history</ion-button>
+    </div>
+    <div class="footer-logo">
+      <ion-img :src="logoW"></ion-img>
+    </div>
+  </base-layout>
 </template>
 
 <script>
-import { IonButton, IonIcon, IonFooter } from "@ionic/vue";
+import { IonButton, IonIcon, IonImg} from "@ionic/vue";
 import { add } from "ionicons/icons";
 
 export default {
   components: {
     IonButton,
     IonIcon,
-    IonFooter
+    IonImg
   },
   data() {
     return {
       add,
-      logoW:  require('.././assets/logo-waste.png')
+      logoW:  require('.././assets/taspg-circular.png')
     };
   },
   computed: {
-    items() {
-      return this.$store.getters.items;
-    },
   },
   methods: {
+    listPickups() {
+      this.$router.push('/pickups')
+    },
     newPickup() {
       console.log('new collection')
+      this.$router.push('/pickups/add')
     }
   },
 };
@@ -65,7 +60,10 @@ export default {
 
 .footer-logo {
   display: flex;
-  border: 1px solid red;
+  flex-direction: column;
+  justify-content: flex-end;
+  border: 0px solid red;
+  height: 380px;
 }
 
 .logo-imaged {

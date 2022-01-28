@@ -8,7 +8,7 @@ const routes = [
   {
     path: '/',
     component: WastePage
-    // redirect: '/items'
+    // redirect: '/'
   },
   {
     path: '/pickups',
@@ -23,7 +23,7 @@ const routes = [
     component: () => import('../pages/PickupDetailsPage.vue')
   },
   {
-    path: '/pickups/add',
+    path: '/pickups/add/',
     component: () => import('../pages/AddPickupPage.vue')
   },
   {
@@ -31,7 +31,7 @@ const routes = [
     component: () => import('../pages/ItemDetailsPage.vue')
   },
   {
-    path: '/items/add',
+    path: '/items/add/:id',
     component: () => import('../pages/AddItemPage.vue')
   }
 ]

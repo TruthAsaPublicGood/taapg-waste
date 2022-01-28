@@ -1,10 +1,10 @@
 <template>
-  <ion-item :router-link="`/items/${pickupdetail.id}`">
+  <ion-item :router-link="`/pickups/${pickupdetail.id}`">
     <ion-thumbnail slot="start">
       <ion-img :src="pickupdetail.image" :alt="pickupdetail.title"></ion-img>
     </ion-thumbnail>
     <ion-label>
-      {{ pickupdetail.title }}
+      dd {{ pickupdetail.title }}
     </ion-label>
   </ion-item>
 </template>
@@ -19,6 +19,6 @@ export default {
     IonThumbnail,
     IonImg,
     IonLabel,
-  },
+  }
 };
 </script>

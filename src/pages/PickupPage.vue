@@ -1,5 +1,5 @@
 <template>
-  <base-layout page-title="Pickup locations">
+  <base-layout page-title="Pickup history" page-default-back-link="/">
     <template v-slot:actions-end>
       <ion-button router-link="/pickups/add">
         <ion-icon slot="icon-only" :icon="add"></ion-icon>
