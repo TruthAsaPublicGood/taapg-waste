@@ -44,7 +44,7 @@ const store = createStore({
     };
   },
   mutations: {
-    addPickup(state, update) {
+    SET_addPickup(state, update) {
       const newPickup = {
         id: new Date().toISOString(),
         title: update.title,
@@ -75,7 +75,7 @@ const store = createStore({
       context.commit('SET_addItem', itemData);
     },
     addPickup(context, update) {
-    context.commit('addPickup', update);
+    context.commit('SET_addPickup', update);
     }
   },
   getters: {
@@ -85,6 +85,24 @@ const store = createStore({
     pickup(state) {
       return (memoryId) => {
         return state.pickups.find((memory) => memory.id === memoryId);
+      };
+    },
+    matcherPickItems (state) {
+      return (memoryId) => {
+        console.log('matcher getter')
+        console.log(memoryId)
+        let pickIDmatch = state.pairPickupItems[memoryId]
+        // loop over and match to items
+        let matchList = []
+        for(let pid of pickIDmatch) {
+          for (let item of state.items) {
+            if (item.id === pid) {
+              matchList.push(item)
+            }
+          }
+        }
+        return matchList
+        // return state.pickups.find((memory) => memory.id === memoryId);
       };
     },
     items(state) {

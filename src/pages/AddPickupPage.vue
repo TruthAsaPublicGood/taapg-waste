@@ -1,5 +1,5 @@
 <template>
-  <base-layout page-title="Add pickup" page-default-back-link="/pickups">
+  <base-layout page-title="new pickup" page-default-back-link="/pickups">
     <create-pickup-form @save-pickup="savePickup"></create-pickup-form>
   </base-layout>
 </template>

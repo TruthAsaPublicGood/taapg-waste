@@ -14,7 +14,7 @@ export default {
   methods: {
     saveItem(itemData) {
       this.$store.dispatch('addItem', itemData);
-      this.$router.replace('/items');
+      this.$router.replace('/pickups/add/');
     }
   }
 };

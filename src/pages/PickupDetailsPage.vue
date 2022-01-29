@@ -4,35 +4,30 @@
     page-default-back-link="/pickups"
   >
     <h2 v-if="!loadedItems">Could not find a memory for the given id.</h2>
-    <!-- <item-overview
-      v-else
-      :title="loadedItems.title"
-      :image="loadedItems.image"
-      :description="loadedItems.description">
-    </item-overview> -->
-    <!-- need to get a list at this stage -->
-    <ion-item v-for="pi in pairItems" :key="pi.id">
-      list {{ pi }}
-    </ion-item>
+    <item-list-item
+      v-for="pi in matchPickItems"
+      :key="pi.id"
+      :itemdetail="pi"
+    ></item-list-item>
   </base-layout>
 </template>
 
 <script>
-// import ItemOverview from "../components/pickups/PickupOverview.vue";
+import ItemListItem from "@/components/items/ItemListItem.vue";
 
 export default {
   components: {
+    ItemListItem
     // ItemOverview,
   },
   computed: {
     loadedItems() {
       return this.$store.getters.pickup(this.memoryId);
     },
+    matchPickItems() {
+      return this.$store.getters.matcherPickItems(this.memoryId);
+    },
     pairItems: function () {
-      console.log('pair items')
-      console.log(this.loadedItems.id)
-      console.log(this.$store.state.pairPickupItems)
-      console.log(this.$store.state.pairPickupItems[this.loadedItems.id])
       return this.$store.state.pairPickupItems[this.loadedItems.id]
     }
   },

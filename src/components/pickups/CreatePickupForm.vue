@@ -13,7 +13,7 @@
         </ion-button>
       </ion-item>
       <ion-item>
-        <ion-label position="floating">Description</ion-label>
+        <ion-label position="floating">Tags</ion-label>
         <ion-textarea rows="5" v-model="enteredDescription"></ion-textarea>
       </ion-item>
     </ion-list>
@@ -21,9 +21,15 @@
       {{ livePickupID }}
     <ion-button @click="addItems">Add items</ion-button>
   </form>
+    <item-list-item
+      v-for="pi in pairItems"
+      :key="pi.id"
+      :itemdetail="pi"
+    ></item-list-item>
 </template>
 
 <script>
+import ItemListItem from "@/components/items/ItemListItem.vue";
 import {
   IonList,
   IonItem,
@@ -34,7 +40,6 @@ import {
   IonThumbnail
 } from "@ionic/vue";
 import { Geolocation } from '@capacitor/geolocation';
-// import { Plugins } from '@capacitor/core';
 
 export default {
   emits: ["save-pickup"],
@@ -45,11 +50,22 @@ export default {
     IonInput,
     IonTextarea,
     IonButton,
-    IonThumbnail
+    IonThumbnail,
+    ItemListItem
   },
   computed: {
     livePickupID: function () {
       return this.$store.state.currentPickup
+    },
+    loadedItems() {
+      return this.$store.getters.pickup(this.memoryId);
+    },
+    pairItems: function () {
+      console.log('pair items')
+      console.log(this.livePickupID)
+      console.log(this.$store.state.pairPickupItems)
+      console.log(this.$store.state.pairPickupItems[this.livePickupID])
+      return this.$store.state.pairPickupItems[this.livePickupID]
     }
   },
   data() {
@@ -67,8 +83,9 @@ export default {
         console.log('watiings')
         const coordinates = await Geolocation.getCurrentPosition();
         console.log('Current position:', coordinates);
+        this.takenGPS = coordinates;
       };
-      this.takenGPS = printCurrentPosition;
+      await printCurrentPosition();
     },
     addItems() {
       this.$router.replace('/items/add/:id')
