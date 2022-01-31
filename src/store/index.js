@@ -54,7 +54,6 @@ const store = createStore({
       };
       state.currentPickup = newPickup.id
       state.pairPickupItems[state.currentPickup] = []
-      console.log(state.pairPickupItems)
       state.pickups.push(newPickup);
     },
     SET_addItem(state, itemData) {
@@ -66,8 +65,6 @@ const store = createStore({
       };
       state.items.push(newItem);
       state.pairPickupItems[state.currentPickup].push(newItem.id)
-      console.log('pair inedex')
-      console.log(state.pairPickupItems)
     }
   },
   actions: {
@@ -89,8 +86,6 @@ const store = createStore({
     },
     matcherPickItems (state) {
       return (memoryId) => {
-        console.log('matcher getter')
-        console.log(memoryId)
         let pickIDmatch = state.pairPickupItems[memoryId]
         // loop over and match to items
         let matchList = []

@@ -1,6 +1,6 @@
 <template>
   <base-layout page-title="new pickup" page-default-back-link="/pickups">
-    <create-pickup-form @save-pickup="savePickup"></create-pickup-form>
+    <create-pickup-form ></create-pickup-form>
   </base-layout>
 </template>
 
@@ -12,7 +12,7 @@ export default {
     CreatePickupForm,
   },
   methods: {
-    savePickup(pickupData) {
+    saveSetPickup(pickupData) {
       this.$store.dispatch('addPickup', pickupData);
       // this.$router.replace('/pickups');
     }

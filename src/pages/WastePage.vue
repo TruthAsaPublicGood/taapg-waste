@@ -40,7 +40,6 @@ export default {
       this.$router.push('/pickups')
     },
     newPickup() {
-      console.log('new collection')
       this.$router.push('/pickups/add')
     }
   },
@@ -56,6 +55,7 @@ export default {
 .collection-button {
   display: flex;
   justify-content: center;
+  padding-top: 2em;
 }
 
 .footer-logo {
