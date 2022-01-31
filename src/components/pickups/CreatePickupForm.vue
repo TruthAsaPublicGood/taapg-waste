@@ -81,9 +81,10 @@ export default {
     async takeGPS() {
       const printCurrentPosition = async () => {
         const coordinates = await Geolocation.getCurrentPosition();
-        this.takenGPS = coordinates;
+        return coordinates;
       };
-      await printCurrentPosition();
+      let gpsLive = await printCurrentPosition();
+      this.takenGPS = gpsLive;
     },
     addItems() {
       this.$router.replace('/items/add/:id')
