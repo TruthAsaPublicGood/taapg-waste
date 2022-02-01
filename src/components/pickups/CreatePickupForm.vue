@@ -11,9 +11,9 @@
         <ion-button type="button" fill="clear" @click="takeGPS">
           Take GPS
         </ion-button>
-        <div id="gps-location" v-if="takenGPS.coords !== undefined">
-          {{ takenGPS.coords.latitude }} {{ takenGPS.coords.longitude }}
-        </div>
+        <ion-item id="gps-location">
+          {{ latitude }} {{ longitude }}
+        </ion-item>
       </ion-item>
       <ion-item>
         <ion-label position="floating">Tags</ion-label>
@@ -74,7 +74,9 @@ export default {
       enteredTitle: "",
       enteredDescription: "",
       imageSummary: null,
-      takenGPS: ''
+      takenGPS: '',
+      latitude: '',
+      longitude: ''
     };
   },
   methods: {
@@ -85,6 +87,8 @@ export default {
       };
       let gpsLive = await printCurrentPosition();
       this.takenGPS = gpsLive;
+      this.latitude = gpsLive.coords.latitude;
+      this.longitude = gpsLive.coords.longitude;
     },
     addItems() {
       this.$router.replace('/items/add/:id')
