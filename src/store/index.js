@@ -41,6 +41,19 @@ const store = createStore({
           description: 'Medium size food table',
         },
       ],
+      mylistTags: ['bed', 'chair', 'desk'],
+      beds:
+      [
+        { title: 'double',
+          image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Tutankhamun%27s_bed_%28Cairo_Museum%29.jpg/330px-Tutankhamun%27s_bed_%28Cairo_Museum%29.jpg'
+        },
+        { title: 'single',
+          image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Tutankhamun%27s_bed_%28Cairo_Museum%29.jpg/330px-Tutankhamun%27s_bed_%28Cairo_Museum%29.jpg'
+        },
+        { title: 'bunk',
+          image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Tutankhamun%27s_bed_%28Cairo_Museum%29.jpg/330px-Tutankhamun%27s_bed_%28Cairo_Museum%29.jpg'
+        },
+      ]
     };
   },
   mutations: {
@@ -108,6 +121,12 @@ const store = createStore({
         return state.items.find((memory) => memory.id === memoryId);
       };
     },
+    tags(state) {
+      return state.mylistTags
+    },
+    beds(state) {
+      return state.beds
+    }
   },
 });
 

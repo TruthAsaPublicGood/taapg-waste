@@ -33,6 +33,14 @@ const routes = [
   {
     path: '/items/add/:id',
     component: () => import('../pages/AddItemPage.vue')
+  },
+  {
+    path: '/mylists',
+    component: () => import('../pages/mylistPage.vue')
+  },
+  {
+    path: '/selectitems',
+    component: () => import('../components/tags/selectItems.vue')
   }
 ]
 
