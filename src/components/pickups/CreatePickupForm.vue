@@ -65,9 +65,9 @@ export default {
     loadedItems() {
       return this.$store.getters.pickup(this.memoryId);
     },
-    pairItems: function () {
-      return this.$store.state.pairPickupItems[this.livePickupID]
-    }
+    pairItems() {
+      return this.$store.getters.matcherPickItems(this.livePickupID);
+    },
   },
   data() {
     return {
