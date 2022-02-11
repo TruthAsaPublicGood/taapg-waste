@@ -41,6 +41,10 @@ const routes = [
   {
     path: '/selectitems',
     component: () => import('../components/tags/selectItems.vue')
+  },
+  {
+    path: '/holismdsc',
+    component: () => import('../components/holismdsc/agreeMent.vue')
   }
 ]
 

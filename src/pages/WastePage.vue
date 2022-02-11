@@ -14,6 +14,9 @@
     <div class="collection-button">
       <ion-button @click="createMylist">My lists</ion-button>
     </div>
+    <div class="collection-button">
+      <ion-button @click="agreeTerms">ID/Consent</ion-button>
+    </div>
     <div class="footer-logo">
       <ion-img :src="logoW"></ion-img>
     </div>
@@ -47,6 +50,9 @@ export default {
     },
     createMylist () {
       this.$router.push('/mylists')
+    },
+    agreeTerms () {
+      this.$router.push('/holismdsc')
     }
   },
 };
