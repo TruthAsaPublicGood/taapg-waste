@@ -1,7 +1,7 @@
 <template>
   <ion-list v-for="tag in tags" :key='tag'>
     <ion-button @click="displayOptions(tag)">
-      {{ tag }}
+      {{ tag.get('wastelabel') }}
     </ion-button>
   </ion-list>
 </template>

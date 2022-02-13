@@ -14,6 +14,15 @@
     <div class="collection-button">
       <ion-button @click="createMylist">My lists</ion-button>
     </div>
+    <!-- <div>
+      <button @click="tagLabalCloud">tagCloud</button>
+      tags:
+      <ul v-for="tag in taglabels" :key="tag.objectId">
+        <li>
+          <ion-button>{{ tag.get('wastelabel') }}</ion-button>
+        </li>
+      </ul>
+    </div> -->
     <div class="collection-button">
       <ion-button @click="agreeTerms">ID/Consent</ion-button>
     </div>

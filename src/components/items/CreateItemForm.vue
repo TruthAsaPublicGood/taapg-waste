@@ -36,6 +36,7 @@ import {
 } from "@ionic/vue";
 import { camera } from 'ionicons/icons';
 import { Camera, CameraResultType } from '@capacitor/camera';
+import Parse from 'parse';
 
 export default {
   emits: ["save-item"],
@@ -78,6 +79,55 @@ export default {
       var imageUrl = takenImage.webPath;
       // Can be set to the src of an image now
       this.takenImageUrl = imageUrl;
+      console.log('photo taken')
+      this.saveParseImage()
+    },
+    saveParseImage() {
+      console.log('start of save')
+      Parse.serverURL = 'https://parseapi.back4app.com/';
+      Parse.initialize("oLOAS9sx13Si3EM8tAZIebMBqVFyvhY7Q1tKuF2K", "J9a52hSWodE4QbDzxNeA33mOdUzimPdj7QUo3dJu");
+      let install = new Parse.Installation();
+      console.log(install)
+      const base64 = "V29ya2luZyBhdCBQYXJzZSBpcyBncmVhdCE=";
+      const file = new Parse.File("myfile1.txt", { base64: base64 });
+      console.log('file saved?')
+      console.log(file)
+      file.save().then(function() {
+        // The file has been saved to Parse.
+        console.log('file saved')
+      }, function(error) {
+        // The file either could not be read, or could not be saved to Parse.
+        console.log(error)
+      });
+
+      // save
+      const saveImage = new Parse.Object("gifts");
+      saveImage.set("giftpic", file);
+      // saveImage.set("imginfo", file);
+      saveImage.save().then(function(data) {
+        console.log('saved objemct')
+        console.log(data)
+      }, function(error) {
+        console.log(error)
+      });
+
+      /*
+      const giftStore = Parse.Object.extend("gifts");
+      const giftImage = new giftStore();
+
+      giftImage.set();
+      giftImage.set();
+
+      giftImage.save()
+      .then((giftImage) => {
+        // Execute any logic that should take place after the object is saved.
+        alert('New object created with objectId: ' + giftImage.id);
+      }, (error) => {
+        // Execute any logic that should take place if the save fails.
+        // error is a Parse.Error with an error code and message.
+        alert('Failed to create new object, with error code: ' + error.message);
+      });
+      */
     },
     submitForm() {
       const itemData = {
