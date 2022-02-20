@@ -9,7 +9,26 @@
       <ion-button @click="newPickup">New collection</ion-button>
     </div>
     <div class="collection-button">
+<<<<<<< HEAD
       <ion-button @click="listPickups">network Items</ion-button>
+=======
+      <ion-button @click="listPickups">Pickup history</ion-button>
+    </div>
+    <div class="collection-button">
+      <ion-button @click="createMylist">My lists</ion-button>
+    </div>
+    <!-- <div>
+      <button @click="tagLabalCloud">tagCloud</button>
+      tags:
+      <ul v-for="tag in taglabels" :key="tag.objectId">
+        <li>
+          <ion-button>{{ tag.get('wastelabel') }}</ion-button>
+        </li>
+      </ul>
+    </div> -->
+    <div class="collection-button">
+      <ion-button @click="agreeTerms">ID/Consent</ion-button>
+>>>>>>> 519f36de32e0442d2aa671e1140e982f7040f29a
     </div>
     <div class="footer-logo">
       <ion-img :src="logoW"></ion-img>

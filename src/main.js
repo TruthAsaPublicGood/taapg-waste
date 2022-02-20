@@ -7,6 +7,10 @@ import store from './store';
 
 import { IonicVue } from '@ionic/vue';
 
+import Parse from 'parse';
+Parse.serverURL = 'https://parseapi.back4app.com/';
+Parse.initialize("oLOAS9sx13Si3EM8tAZIebMBqVFyvhY7Q1tKuF2K", "J9a52hSWodE4QbDzxNeA33mOdUzimPdj7QUo3dJu");
+
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/vue/css/core.css';
 
@@ -33,7 +37,8 @@ const app = createApp(App)
   .use(IonicVue)
   .use(router)
   .use(store)
-  .use(defineCustomElements);
+  .use(defineCustomElements)
+  .use(Parse);
 
 app.component('base-layout', BaseLayout);
 
