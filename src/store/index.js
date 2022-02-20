@@ -1,17 +1,18 @@
 // import Vue from 'vue'
 import { createStore } from 'vuex';
+import Parse from 'parse'
 
 const store = createStore({
   state() {
     return {
-      loginStatus: false,
+      loginStatus: '',
       authData:
       {
         token: "",
         refreshToken: "",
         tokenExp: "",
-        peerId: "",
-        peerName: "",
+        peerId: 0,
+        peerName: "AJ",
       },
       currentPickup: 'ppl1',
       pairPickupItems: {
@@ -68,16 +69,25 @@ const store = createStore({
   mutations: {
     SET_AUTH_PEER(state, update) {
       console.log('auth peer if valid pw')
-      console.log(state)
       console.log(update)
+      state.authData.peerName = update.name
+      state.authData.peerId = 1
     },
     SET_saveAuthToken(state, update) {
       console.log('token set')
       console.log(update)
       state.authData.token = update.access_token
+      state.authData.peerId = 1
+    },
+    SET_endAuthToken(state) {
+      console.log('end token')
+      state.authData.token = ''
+      state.authData.peerId = 0
+      console.log(state.authData)
     },
     SET_saveLoginStatus(state, update) {
       console.log('setlogin status')
+      console.log(update)
       state.loginStatus = update
     },
     SET_addPickup(state, update) {
@@ -105,27 +115,62 @@ const store = createStore({
   },
   actions: {
     async actionAuthStart(context, payload) {
+      console.log('action start ATH')
       console.log(payload)
       // need to call parse
+      Parse.serverURL = 'https://parseapi.back4app.com/';
+      Parse.initialize("","");
+      let install = new Parse.Installation();
+      console.log(install)
+        // Reading your First Data Object from Back4App
+      async function retrievePerson() {
+        const query = new Parse.Query("User");
+
+        try {
+          const person = await query.find() // .get("mIBxGxiQum");
+          // const name = person.get("wastelabel");
+          // const age = person.get("name");
+            console.log('results')
+            console.log(person)
+            return person;
+        } catch (error) {
+              console.log(error)
+        }
+      }
+
+      let peerInfo = await retrievePerson()
+      // this.taglabels = peerInfo
+      /*for (let tag of peerInfo) {
+        console.log(tag.get('wastelabel'))
+      }*/
+      if (peerInfo) {
+        console.log('backe user check pass')
+        context.commit("SET_saveAuthToken", '123');
+        context.commit("SET_saveLoginStatus", 'success');
+      } else {
+        context.commit("SET_saveLoginStatus", false);
+      }
+      context.commit('SET_AUTH_PEER', peerInfo);
+      /*
       context.commit("SET_saveLoginStatus", true);
       const response = await fetch("http://localhost:3000/auth/login", payload);
           if (response.status == 200 || response.status == 201) {
-            /* await Storage.set({
+            await Storage.set({
               key: "access_token",
               value: response.data.access_token,
             });
             await Storage.set({
               key: "refresh_token",
               value: response.data.refresh_token,
-            }); */
+            });
             context.commit("saveAuthToken", response.data);
             context.commit("SET_saveLoginStatus", true);
           } else {
             context.commit("SET_saveLoginStatus", false);
-          }
+          } */
       // context.commit('SET_AUTH_PEER', update);
     },
-    async loadStorageTokens(context) {
+    loadStorageTokens(context) {
         const access_token = '123' // await await Storage.get({ key: "access_token" });
         const refresh_token = '123' // await await Storage.get({ key: "refresh_token" });
         if (access_token && refresh_token) {
@@ -135,6 +180,11 @@ const store = createStore({
           };
           context.commit('SET_saveAuthToken', tokenData);
         }
+    },
+    actionEndaccess(context) {
+      console.log('signout start')
+      // remove token access
+      context.commit('SET_endAuthToken');
     },
     addItem(context, itemData) {
       context.commit('SET_addItem', itemData);

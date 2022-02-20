@@ -14,7 +14,8 @@ const routes = [
   },
   {
     path: '/member',
-    component: WastePage
+    component: WastePage,
+    meta: { requiredAuth: true },
     // redirect: '/'
   },
   {
@@ -61,18 +62,21 @@ const router = createRouter({
 })
 
 function guard(to, from, next, authData) {
-  console.log('gurad')
-  console.log(to)
-  console.log(from)
-  console.log(next)
+  console.log('gurad FUNCTION')
+  // console.log(to)
+  // console.log(from)
+  // console.log(next)
   console.log(authData)
   if (to.meta && to.meta.requiredAuth) {
-    if (authData && authData.userId > 0) {
+    console.log('metaPASS')
+    console.log(authData.peerId)
+    if (authData && authData.peerId > 0) {
       return next();
     }
     return next({ path: "/" });
   } else {
-    if (authData && authData.userId > 0) {
+    console.log('metaFAIL')
+    if (authData && authData.peerId > 0) {
       return next({ path: "/member" });
     }
     return next();
@@ -81,11 +85,16 @@ function guard(to, from, next, authData) {
 
 router.beforeEach((to, from, next) => {
   let authData = store.getters['getAuthData'];
-  console.log('authdata')
+  console.log('authdata--router')
   console.log(authData)
-  if (authData.userId == 0) {
-    store.dispatch('loadStorageTokens').then(
+  if (authData.peerId == 0) {
+    console.log('pass')
+    store.dispatch('loadStorageTokens')
+    authData = store.getters['getAuthData'];
+    return guard(to, from, next, authData);
+    /*store.dispatch('loadStorageTokens').then(
       () => {
+        console.log('token loaded???')
         authData = store.getters['getAuthData'];
         return guard(to, from, next, authData);
       },
@@ -93,8 +102,9 @@ router.beforeEach((to, from, next) => {
         console.log(error);
         return guard(to, from, next, authData);
       }
-    );
+    ); */
   } else {
+    console.log('repeate GUGUUGard')
     return guard(to, from, next, authData);
   }
 });
