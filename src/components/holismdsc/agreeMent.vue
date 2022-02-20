@@ -6,10 +6,13 @@
       </ion-button>
     </template>
     <ion-item class="holism-space">
-      Register / JOIN
+      Privacy
     </ion-item>
     <ion-item class="holism-space">
-      CONSENT wizard
+      How the data will be use.
+    </ion-item>
+    <ion-item class="holism-space">
+      AI use in network
     </ion-item>
   </base-layout>
 </template>

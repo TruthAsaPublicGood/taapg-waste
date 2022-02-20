@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router';
+import store from "../store/index";
 
+import CircularPage from '../pages/circularPage.vue';
 import WastePage from '../pages/WastePage.vue';
 import ItemsPage from '../pages/ItemsPage.vue';
 import PickupPage from '../pages/PickupPage.vue'
@@ -7,6 +9,11 @@ import PickupPage from '../pages/PickupPage.vue'
 const routes = [
   {
     path: '/',
+    component: CircularPage
+    // redirect: '/'
+  },
+  {
+    path: '/member',
     component: WastePage
     // redirect: '/'
   },
@@ -52,5 +59,44 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
+
+function guard(to, from, next, authData) {
+  console.log('gurad')
+  console.log(to)
+  console.log(from)
+  console.log(next)
+  console.log(authData)
+  if (to.meta && to.meta.requiredAuth) {
+    if (authData && authData.userId > 0) {
+      return next();
+    }
+    return next({ path: "/" });
+  } else {
+    if (authData && authData.userId > 0) {
+      return next({ path: "/member" });
+    }
+    return next();
+  }
+}
+
+router.beforeEach((to, from, next) => {
+  let authData = store.getters['getAuthData'];
+  console.log('authdata')
+  console.log(authData)
+  if (authData.userId == 0) {
+    store.dispatch('loadStorageTokens').then(
+      () => {
+        authData = store.getters['getAuthData'];
+        return guard(to, from, next, authData);
+      },
+      (error) => {
+        console.log(error);
+        return guard(to, from, next, authData);
+      }
+    );
+  } else {
+    return guard(to, from, next, authData);
+  }
+});
 
 export default router

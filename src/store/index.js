@@ -4,6 +4,15 @@ import { createStore } from 'vuex';
 const store = createStore({
   state() {
     return {
+      loginStatus: false,
+      authData:
+      {
+        token: "",
+        refreshToken: "",
+        tokenExp: "",
+        peerId: "",
+        peerName: "",
+      },
       currentPickup: 'ppl1',
       pairPickupItems: {
         'ppl1': ['m1', 'm2']
@@ -57,6 +66,20 @@ const store = createStore({
     };
   },
   mutations: {
+    SET_AUTH_PEER(state, update) {
+      console.log('auth peer if valid pw')
+      console.log(state)
+      console.log(update)
+    },
+    SET_saveAuthToken(state, update) {
+      console.log('token set')
+      console.log(update)
+      state.authData.token = update.access_token
+    },
+    SET_saveLoginStatus(state, update) {
+      console.log('setlogin status')
+      state.loginStatus = update
+    },
     SET_addPickup(state, update) {
       const newPickup = {
         id: new Date().toISOString(),
@@ -81,6 +104,38 @@ const store = createStore({
     }
   },
   actions: {
+    async actionAuthStart(context, payload) {
+      console.log(payload)
+      // need to call parse
+      context.commit("SET_saveLoginStatus", true);
+      const response = await fetch("http://localhost:3000/auth/login", payload);
+          if (response.status == 200 || response.status == 201) {
+            /* await Storage.set({
+              key: "access_token",
+              value: response.data.access_token,
+            });
+            await Storage.set({
+              key: "refresh_token",
+              value: response.data.refresh_token,
+            }); */
+            context.commit("saveAuthToken", response.data);
+            context.commit("SET_saveLoginStatus", true);
+          } else {
+            context.commit("SET_saveLoginStatus", false);
+          }
+      // context.commit('SET_AUTH_PEER', update);
+    },
+    async loadStorageTokens(context) {
+        const access_token = '123' // await await Storage.get({ key: "access_token" });
+        const refresh_token = '123' // await await Storage.get({ key: "refresh_token" });
+        if (access_token && refresh_token) {
+          const tokenData = {
+            access_token: access_token.value,
+            refresh_token: refresh_token.value
+          };
+          context.commit('SET_saveAuthToken', tokenData);
+        }
+    },
     addItem(context, itemData) {
       context.commit('SET_addItem', itemData);
     },
@@ -89,6 +144,12 @@ const store = createStore({
     }
   },
   getters: {
+    getLoginStatus(state){
+      return state.loginStatus;
+    },
+    getAuthData(state){
+      return state.authData;
+    },
     pickups(state) {
       return state.pickups;
     },
