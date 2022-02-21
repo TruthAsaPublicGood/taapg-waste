@@ -30,8 +30,8 @@
         </li>
       </ul>
     </div> -->
-    <div class="auth-button">
-      <ion-button @click="authEnd" >Sign Out</ion-button>
+    <div class="signout-button">
+      <ion-button color="dark" @click="authEnd" >Sign Out</ion-button>
     </div>
     <div class="footer-logo">
       <ion-img :src="logoW"></ion-img>
@@ -95,6 +95,13 @@ export default {
   justify-content: center;
   padding-top: 2em;
 }
+
+.signout-button {
+  display: flex;
+  justify-content: center;
+  padding-top: 6em;
+}
+
 
 .footer-logo {
   display: flex;

@@ -23,6 +23,9 @@
     <div class="collection-button">
       <ion-button @click="agreeTerms">Consent & Privacy</ion-button>
     </div>
+    <div class="collection-button">
+      <ion-button @click="aboutTruth">About</ion-button>
+    </div>
     <div class="footer-logo">
       <ion-img :src="logoW"></ion-img>
     </div>
@@ -64,7 +67,7 @@ export default {
       if (this.peerInfo.peer && this.peerInfo.pw) {
         await this.actionAuthStart(this.peerInfo);
         if(this.getLoginStatus === "success"){
-          alert('login succes');
+          this.$router.push('/member')
         } else {
           alert('falied to login')
         }
@@ -74,6 +77,10 @@ export default {
     agreeTerms () {
       console.log('view holism-DSC')
       this.$router.push('/holismdsc')
+    },
+    aboutTruth () {
+      console.log('view holism-DSC')
+      this.$router.push('/about')
     }
   },
 };
@@ -95,8 +102,8 @@ export default {
 .collection-button {
   display: flex;
   justify-content: center;
-  padding-top: 4em;
-  border-top: 1px solid grey;
+  padding-top: 2em;
+  border-top: 0px solid grey;
 }
 
 .footer-logo {
@@ -104,7 +111,7 @@ export default {
   flex-direction: column;
   justify-content: flex-end;
   border: 0px solid red;
-  height: 380px;
+  height: 180px;
 }
 
 .logo-imaged {

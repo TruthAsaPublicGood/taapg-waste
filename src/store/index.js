@@ -68,26 +68,18 @@ const store = createStore({
   },
   mutations: {
     SET_AUTH_PEER(state, update) {
-      console.log('auth peer if valid pw')
-      console.log(update)
-      state.authData.peerName = update.name
+      state.authData.peerName = update
       state.authData.peerId = 1
     },
     SET_saveAuthToken(state, update) {
-      console.log('token set')
-      console.log(update)
-      state.authData.token = update.access_token
+      state.authData.token = update
       state.authData.peerId = 1
     },
     SET_endAuthToken(state) {
-      console.log('end token')
       state.authData.token = ''
       state.authData.peerId = 0
-      console.log(state.authData)
     },
     SET_saveLoginStatus(state, update) {
-      console.log('setlogin status')
-      console.log(update)
       state.loginStatus = update
     },
     SET_addPickup(state, update) {
@@ -115,15 +107,47 @@ const store = createStore({
   },
   actions: {
     async actionAuthStart(context, payload) {
-      console.log('action start ATH')
-      console.log(payload)
       // need to call parse
       Parse.serverURL = 'https://parseapi.back4app.com/';
       Parse.initialize("","");
-      let install = new Parse.Installation();
-      console.log(install)
+      // let install = new Parse.Installation();
+      // console.log(install)
+      /* async function register() {
+        const user = new Parse.User();
+        user.set('username', '');
+        user.set('email', '');
+        user.set('firstName', '');
+        user.set('lastName', '');
+        user.set('password', '');
+        try {
+            let userResult = await user.signUp();
+            console.log('User signed up', userResult);
+          } catch (error) {
+            console.error('Error while signing up user', error);
+          }
+      }
+      await register() */
+
+      async function peerLogin() {
+        try {
+          // Pass the username and password to logIn function
+          let user = await Parse.User.logIn(payload.peer, payload.pw);
+          // Do stuff after successful login
+          if (user.get('sessionToken')) {
+            context.commit("SET_saveAuthToken", user.get('sessionToken'));
+            context.commit("SET_saveLoginStatus", 'success');
+            context.commit('SET_AUTH_PEER', user.get('username'));
+          } else {
+            context.commit("SET_saveLoginStatus", false);
+          }
+        } catch (error) {
+          console.error('Error while logging in user', error);
+        }
+      }
+      await peerLogin()
+
         // Reading your First Data Object from Back4App
-      async function retrievePerson() {
+      /* async function retrievePerson() {
         const query = new Parse.Query("User");
 
         try {
@@ -139,18 +163,12 @@ const store = createStore({
       }
 
       let peerInfo = await retrievePerson()
+      */
       // this.taglabels = peerInfo
       /*for (let tag of peerInfo) {
         console.log(tag.get('wastelabel'))
       }*/
-      if (peerInfo) {
-        console.log('backe user check pass')
-        context.commit("SET_saveAuthToken", '123');
-        context.commit("SET_saveLoginStatus", 'success');
-      } else {
-        context.commit("SET_saveLoginStatus", false);
-      }
-      context.commit('SET_AUTH_PEER', peerInfo);
+
       /*
       context.commit("SET_saveLoginStatus", true);
       const response = await fetch("http://localhost:3000/auth/login", payload);
@@ -182,7 +200,6 @@ const store = createStore({
         }
     },
     actionEndaccess(context) {
-      console.log('signout start')
       // remove token access
       context.commit('SET_endAuthToken');
     },

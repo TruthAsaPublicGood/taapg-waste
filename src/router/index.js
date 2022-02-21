@@ -20,39 +20,51 @@ const routes = [
   },
   {
     path: '/pickups',
-    component: PickupPage
+    component: PickupPage,
+    meta: { requiredAuth: true },
   },
   {
     path: '/items',
-    component: ItemsPage
+    component: ItemsPage,
+    meta: { requiredAuth: true },
   },
   {
     path: '/pickups/:id',
-    component: () => import('../pages/PickupDetailsPage.vue')
+    component: () => import('../pages/PickupDetailsPage.vue'),
+    meta: { requiredAuth: true },
   },
   {
     path: '/pickups/add/',
-    component: () => import('../pages/AddPickupPage.vue')
+    component: () => import('../pages/AddPickupPage.vue'),
+    meta: { requiredAuth: true },
   },
   {
     path: '/items/:id',
-    component: () => import('../pages/ItemDetailsPage.vue')
+    component: () => import('../pages/ItemDetailsPage.vue'),
+    meta: { requiredAuth: true },
   },
   {
     path: '/items/add/:id',
-    component: () => import('../pages/AddItemPage.vue')
+    component: () => import('../pages/AddItemPage.vue'),
+    meta: { requiredAuth: true },
   },
   {
     path: '/mylists',
-    component: () => import('../pages/mylistPage.vue')
+    component: () => import('../pages/mylistPage.vue'),
+    meta: { requiredAuth: true },
   },
   {
     path: '/selectitems',
-    component: () => import('../components/tags/selectItems.vue')
+    component: () => import('../components/tags/selectItems.vue'),
+    meta: { requiredAuth: true },
   },
   {
     path: '/holismdsc',
     component: () => import('../components/holismdsc/agreeMent.vue')
+  },
+  {
+    path: '/about',
+    component: () => import('../components/holismdsc/aboutTaapg.vue')
   }
 ]
 
@@ -62,20 +74,12 @@ const router = createRouter({
 })
 
 function guard(to, from, next, authData) {
-  console.log('gurad FUNCTION')
-  // console.log(to)
-  // console.log(from)
-  // console.log(next)
-  console.log(authData)
   if (to.meta && to.meta.requiredAuth) {
-    console.log('metaPASS')
-    console.log(authData.peerId)
     if (authData && authData.peerId > 0) {
       return next();
     }
     return next({ path: "/" });
   } else {
-    console.log('metaFAIL')
     if (authData && authData.peerId > 0) {
       return next({ path: "/member" });
     }
@@ -85,11 +89,8 @@ function guard(to, from, next, authData) {
 
 router.beforeEach((to, from, next) => {
   let authData = store.getters['getAuthData'];
-  console.log('authdata--router')
-  console.log(authData)
   if (authData.peerId == 0) {
-    console.log('pass')
-    store.dispatch('loadStorageTokens')
+    // store.dispatch('loadStorageTokens')
     authData = store.getters['getAuthData'];
     return guard(to, from, next, authData);
     /*store.dispatch('loadStorageTokens').then(
@@ -104,7 +105,6 @@ router.beforeEach((to, from, next) => {
       }
     ); */
   } else {
-    console.log('repeate GUGUUGard')
     return guard(to, from, next, authData);
   }
 });
