@@ -109,7 +109,7 @@ const store = createStore({
     async actionAuthStart(context, payload) {
       // need to call parse
       Parse.serverURL = 'https://parseapi.back4app.com/';
-      Parse.initialize("","");
+      Parse.initialize("oLOAS9sx13Si3EM8tAZIebMBqVFyvhY7Q1tKuF2K", "J9a52hSWodE4QbDzxNeA33mOdUzimPdj7QUo3dJu");
       // let install = new Parse.Installation();
       // console.log(install)
       /* async function register() {
