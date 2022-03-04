@@ -16,7 +16,10 @@
     </ion-card>
     </div>
     <div class="collection-button">
-      <ion-button @click="newPickup">New collection</ion-button>
+      <ion-button @click="takePhoto">
+        <ion-icon slot="icon-only" :icon="camera"></ion-icon>
+        New collection
+      </ion-button>
     </div>
     <div class="collection-button">
       <ion-button @click="listPickups">Pickup history</ion-button>
@@ -41,8 +44,10 @@
 
 <script>
 import { IonCard, IonCardContent, IonLabel, IonItem, IonButton, IonIcon, IonImg} from "@ionic/vue";
-import { add } from "ionicons/icons";
+import { add, camera } from "ionicons/icons";
 import { mapGetters } from "vuex";
+import { Camera, CameraResultType } from '@capacitor/camera';
+import Parse from 'parse';
 
 export default {
   components: {
@@ -57,6 +62,7 @@ export default {
   data() {
     return {
       add,
+      camera,
       logoW:  require('.././assets/taspg-circular.png')
     };
   },
@@ -68,11 +74,91 @@ export default {
       this.$store.dispatch('actionEndaccess');
       this.$router.push('/')
     },
+    async takePhoto() {
+      const takePicture = async () => {
+        const image = await Camera.getPhoto({
+          quality: 90,
+          allowEditing: true,
+          resultType: CameraResultType.Uri
+        });
+        // image.webPath will contain a path that can be set as an image src.
+        // You can access the original file using image.path, which can be
+        // passed to the Filesystem API to read the raw data of the image,
+        // if desired (or pass resultType: CameraResultType.Base64 to getPhoto)
+        // var imageUrl = image.webPath;
+        // Can be set to the src of an image now
+        // this.takenImageUrl = imageUrl;
+        return image;
+      };
+      let takenImage = await takePicture()
+      var imageUrl = takenImage.webPath;
+      // Can be set to the src of an image now
+      this.takenImageUrl = imageUrl;
+      console.log('photo taken')
+      this.saveParseImage()
+    },
+    saveParseImage() {
+      console.log('start of save')
+      this.$router.push('/items/add/:id')
+      Parse.serverURL = 'https://parseapi.back4app.com/';
+      Parse.initialize("oLOAS9sx13Si3EM8tAZIebMBqVFyvhY7Q1tKuF2K", "J9a52hSWodE4QbDzxNeA33mOdUzimPdj7QUo3dJu");
+      let install = new Parse.Installation();
+      console.log(install)
+      const base64 = "V29ya2luZyBhdCBQYXJzZSBpcyBncmVhdCE=";
+      const file = new Parse.File("myfile1.txt", { base64: base64 });
+      console.log('file saved?')
+      console.log(file)
+      file.save().then(function() {
+        // The file has been saved to Parse.
+        console.log('file saved')
+      }, function(error) {
+        // The file either could not be read, or could not be saved to Parse.
+        console.log(error)
+      });
+
+      // save
+      const saveImage = new Parse.Object("gifts");
+      saveImage.set("giftpic", file);
+      // saveImage.set("imginfo", file);
+      saveImage.save().then(function(data) {
+        console.log('saved objemct')
+        console.log(data)
+      }, function(error) {
+        console.log(error)
+      });
+
+      /*
+      const giftStore = Parse.Object.extend("gifts");
+      const giftImage = new giftStore();
+
+      giftImage.set();
+      giftImage.set();
+
+      giftImage.save()
+      .then((giftImage) => {
+        // Execute any logic that should take place after the object is saved.
+        alert('New object created with objectId: ' + giftImage.id);
+      }, (error) => {
+        // Execute any logic that should take place if the save fails.
+        // error is a Parse.Error with an error code and message.
+        alert('Failed to create new object, with error code: ' + error.message);
+      });
+      */
+    },
+    submitForm() {
+      const itemData = {
+        title: this.enteredTitle,
+        imageUrl: this.takenImageUrl,
+        description: this.enteredDescription,
+      };
+      this.$emit("save-item", itemData);
+    },
     listPickups() {
       this.$router.push('/pickups')
     },
     newPickup() {
-      this.$router.push('/pickups/add')
+      // this.$router.push('/pickups/add')
+      this.$router.push('/items/add/:id')
     },
     createMylist () {
       this.$router.push('/mylists')

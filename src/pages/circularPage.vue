@@ -50,7 +50,7 @@ export default {
   data() {
     return {
       add,
-      logoW:  require('.././assets/taspg-circular.png'),
+      logoW:  require('.././assets/logo-circular.png'),
       peerInfo:
       {
         peer: '',

@@ -1,5 +1,5 @@
 <template>
-  <base-layout page-title="Add a item" page-default-back-link="/pickups/:id">
+  <base-layout page-title="item description" page-default-back-link="/pickups/:id">
     <create-item-form @save-item="saveItem"></create-item-form>
   </base-layout>
 </template>
@@ -14,7 +14,7 @@ export default {
   methods: {
     saveItem(itemData) {
       this.$store.dispatch('addItem', itemData);
-      this.$router.replace('/pickups/add/');
+      this.$router.replace('/items/:id');
     }
   }
 };

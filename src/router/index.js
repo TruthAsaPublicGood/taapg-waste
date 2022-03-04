@@ -49,6 +49,11 @@ const routes = [
     meta: { requiredAuth: true },
   },
   {
+    path: '/items/location/',
+    component: () => import('../pages/AddLocationPage.vue'),
+    meta: { requiredAuth: true },
+  },
+  {
     path: '/mylists',
     component: () => import('../pages/mylistPage.vue'),
     meta: { requiredAuth: true },
