@@ -24,8 +24,8 @@ module.exports = {
     hotOnly: false
   },
   publicPath: process.env.NODE_ENV === 'production'
-    ? '/circular/'
-    : '/circular/',
+    ? '/'
+    : '/',
   pluginOptions: {
     i18n: {
       locale: 'en',

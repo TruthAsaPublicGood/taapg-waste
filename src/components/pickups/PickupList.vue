@@ -1,7 +1,7 @@
 <template>
   <ion-list>
     <pickup-list-item
-      v-for="item in pickups"
+      v-for="item in items"
       :key="item.id"
       :pickupdetail="item"
     ></pickup-list-item>
@@ -13,7 +13,7 @@ import { IonList } from "@ionic/vue";
 import PickupListItem from "./PickupListItem.vue";
 
 export default {
-  props: ["pickups"],
+  props: ["items"],
   components: {
     IonList,
     PickupListItem,

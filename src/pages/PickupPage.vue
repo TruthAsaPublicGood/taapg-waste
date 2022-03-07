@@ -4,8 +4,8 @@
       <ion-button router-link="/pickups/add">
         <ion-icon slot="icon-only" :icon="add"></ion-icon>
       </ion-button>
-    </template>
-    <pickups-list :pickups="pickups"></pickups-list>
+    </template>is {{ itemsStorage }}
+    <pickups-list :itemss="items"></pickups-list>
   </base-layout>
 </template>
 
@@ -27,9 +27,20 @@ export default {
     };
   },
   computed: {
-    pickups() {
+    items() {
       return this.$store.getters.items;
     },
+    itemsStorage() {
+      return this.$store.state.localStoreItems;
+    },
   },
+  mounted(){
+    this.localStorage()
+  },
+  methods: {
+    localStorage() {
+      this.$store.dispatch('actionLocalStorageItems')
+    }
+  }
 };
 </script>

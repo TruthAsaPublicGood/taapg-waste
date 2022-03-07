@@ -1,5 +1,7 @@
 // import Vue from 'vue'
 import { createStore } from 'vuex';
+import { Filesystem, Directory } from '@capacitor/filesystem';
+import { Storage } from '@capacitor/storage';
 import Parse from 'parse'
 
 const store = createStore({
@@ -22,6 +24,7 @@ const store = createStore({
       },
       pickups: [],
       items: [],
+      itemsStorage: [],
       itemInfo: [],
       itemLocation: [],
       mylistTags: ['bed', 'chair', 'desk'],
@@ -86,6 +89,32 @@ const store = createStore({
       newLocation.id = new Date().toISOString(),
       state.itemLocation.push(newLocation);
       state.groupItemInfo[state.currentItem].push(newLocation.id)
+      // save to the cloud
+      let itemGroup = state.groupItemInfo[state.currentItem]
+      let matchList = {}
+      matchList.item = state.items.find((memory) => memory.id === state.currentItem);
+      matchList.iteminfo = state.itemInfo.find((memory) => memory.id === itemGroup[0]);
+      matchList.itemlocation = state.itemLocation.find((memory) => memory.id === itemGroup[1]);
+      console.log('item data')
+      console.log(matchList)
+      let bundleJSON = JSON.stringify(matchList)
+      console.log(state.authData)
+      // save ie upload to cloud
+      Parse.serverURL = 'https://parseapi.back4app.com/';
+      Parse.initialize("oLOAS9sx13Si3EM8tAZIebMBqVFyvhY7Q1tKuF2K", "J9a52hSWodE4QbDzxNeA33mOdUzimPdj7QUo3dJu");
+      const saveImage = new Parse.Object("itemdetails");
+      saveImage.set("giftdetails", bundleJSON);
+      saveImage.set("peer", state.authData.peerName);
+      // saveImage.set("imginfo", file);
+      saveImage.save().then(function() {
+        console.log('cloud storage success')
+      }, function(error) {
+        console.log(error)
+      });
+
+    },
+    SET_storageItems(state, update) {
+      state.localStoreItems = update
     }
   },
   actions: {
@@ -199,6 +228,34 @@ const store = createStore({
     },
     addPickup(context, update) {
     context.commit('SET_addPickup', update);
+    },
+    async actionLocalStorageItems(context) {
+      console.log('get local store info')
+      let localStoreItems = []
+      localStoreItems.push('mockdata')
+
+      try{
+        const photoList = await Storage.get({ key: 'gifts' });
+        console.log('stored locally')
+        let path = JSON.parse(photoList.value)
+        let extraInfo = path
+        const file = await Filesystem.readFile({
+          path: extraInfo,
+          directory: Directory.Data,
+        });
+        context.commit('SET_storageItems', file);
+      } catch(err) {
+        console.log('Ohhhh nooo!');
+        console.log(err);
+      }
+      /*const photosInStorage = photoList.value ? JSON.parse(photoList.value) : [];
+      for (const photo of photosInStorage) {
+        const file = await Filesystem.readFile({
+          path: photo.filepath,
+          directory: Directory.Data,
+        });
+        photo.webviewPath = `data:image/jpeg;base64,${file.data}`;
+      } */
     }
   },
   getters: {

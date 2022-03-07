@@ -48,6 +48,7 @@ import { add, camera } from "ionicons/icons";
 import { mapGetters } from "vuex";
 import { Camera, CameraResultType } from '@capacitor/camera';
 import { Filesystem, Directory } from '@capacitor/filesystem';
+import { Storage } from '@capacitor/storage';
 import Parse from 'parse';
 
 export default {
@@ -64,7 +65,9 @@ export default {
     return {
       add,
       camera,
-      logoW:  require('.././assets/taspg-circular.png')
+      logoW:  require('.././assets/taspg-circular.png'),
+      PHOTO_STORAGE: 'gifts',
+      photos: []
     };
   },
   computed: {
@@ -92,69 +95,39 @@ export default {
         return image;
       };
       let takenImage = await takePicture()
+      console.log('photo taken')
+      // console.log(takenImage)
       var imageUrl = takenImage.webPath;
       // Can be set to the src of an image now
       this.takenImageUrl = imageUrl;
-      this.saveParseImage()
+      // prepare the image B64 for storage locally and cloud
+      const b64PhotoData = await this.readAsBase64(takenImage)
+      // save to local device & name file
+      this.saveLocalImage(b64PhotoData)
+      // console.log(b64PhotoData)
     },
-    async saveLocalImage() {
+    async saveLocalImage(b64PhotoData) {
       // Write the file to the data directory
       const fileName = new Date().getTime() + '.jpeg';
-      const savedFile = await Filesystem.writeFile({
+      await Filesystem.writeFile({
         path: fileName,
         data: this.takenImageUrl,
         directory: Directory.Data
       });
-      console.log(savedFile)
+      // index the file location in local storage
+      this.saveLocalStorage(fileName)
+      // next save to the cloud
+      this.saveParseImage(fileName, b64PhotoData)
+      // read local saved photos
+      // this.getImagefileLocal(fileName)
     },
-    saveParseImage() {
-      Parse.serverURL = 'https://parseapi.back4app.com/';
-      Parse.initialize("oLOAS9sx13Si3EM8tAZIebMBqVFyvhY7Q1tKuF2K", "J9a52hSWodE4QbDzxNeA33mOdUzimPdj7QUo3dJu");
-      const base64 = "V29ya2luZyBhdCBQYXJzZSBpcyBncmVhdCE=";
-      const file = new Parse.File("myfile1.txt", { base64: base64 });
-      file.save().then(function() {
-        // The file has been saved to Parse.
-        console.log('file saved')
-      }, function(error) {
-        // The file either could not be read, or could not be saved to Parse.
-        console.log(error)
+    async getImagefileLocal(fileName) {
+      const contents = await Filesystem.readFile({
+        path: fileName,
+        directory: Directory.Data
+        // encoding: Encoding.UTF8,
       });
-
-      // save
-      const saveImage = new Parse.Object("gifts");
-      saveImage.set("giftpic", file);
-      // saveImage.set("imginfo", file);
-      saveImage.save().then(function(data) {
-        console.log(data)
-      }, function(error) {
-        console.log(error)
-      });
-
-      /*
-      const giftStore = Parse.Object.extend("gifts");
-      const giftImage = new giftStore();
-
-      giftImage.set();
-      giftImage.set();
-
-      giftImage.save()
-      .then((giftImage) => {
-        // Execute any logic that should take place after the object is saved.
-        alert('New object created with objectId: ' + giftImage.id);
-      }, (error) => {
-        // Execute any logic that should take place if the save fails.
-        // error is a Parse.Error with an error code and message.
-        alert('Failed to create new object, with error code: ' + error.message);
-      });
-      */
-      // setup new item id i.e. unique time for now
-      this.$store.dispatch('addItem', this.takenImageUrl);
-      // lastly with image saved add item details
-      this.$router.push('/items/add/:id')
-    },
-    async getImageLocal() {
-      let localImage = await this.readAsBase64('d')
-      console.log(localImage)
+      return contents
     },
     async readAsBase64(photo) {
       // Fetch the photo, read as a blob, then convert to base64 format
@@ -172,6 +145,71 @@ export default {
         reader.readAsDataURL(blob);
       });
       return convertB64
+    },
+    async saveLocalStorage(fileLoc) {
+      Storage.set({
+        key: this.PHOTO_STORAGE,
+        value: JSON.stringify(fileLoc),
+      });
+      await this.loadSavedLocalStorage()
+    },
+    async loadSavedLocalStorage() {
+      await Storage.get({ key: this.PHOTO_STORAGE });
+      // const photosInStorage = photoList.value ? JSON.parse(photoList.value) : [];
+      /*for (const photo of photosInStorage) {
+        const file = await Filesystem.readFile({
+          path: photo.filepath,
+          directory: Directory.Data,
+        });
+        photo.webviewPath = `data:image/jpeg;base64,${file.data}`;
+      }
+
+      this.photos = photosInStorage; */
+    },
+    saveParseImage(fileName, photoData) {
+      Parse.serverURL = 'https://parseapi.back4app.com/';
+      Parse.initialize("oLOAS9sx13Si3EM8tAZIebMBqVFyvhY7Q1tKuF2K", "J9a52hSWodE4QbDzxNeA33mOdUzimPdj7QUo3dJu");
+      const base64 = photoData // "V29ya2luZyBhdCBQYXJzZSBpcyBncmVhdCE=";
+      // prepare the file for parse storage
+      const file = new Parse.File(fileName, { base64: base64 });
+      file.save().then(function() {
+        // The file has been saved to Parse.
+        console.log('file prepared')
+      }, function(error) {
+        // The file either could not be read, or could not be saved to Parse.
+        console.log(error)
+      });
+
+      // save ie upload to cloud
+      const saveImage = new Parse.Object("gifts");
+      saveImage.set("giftpic", file);
+      saveImage.set("peer", this.getAuthData.peerName);
+      // saveImage.set("imginfo", file);
+      saveImage.save().then(function() {
+        console.log('cloud storage success')
+      }, function(error) {
+        console.log(error)
+      });
+
+      /*
+      const giftStore = Parse.Object.extend("gifts");
+      const giftImage = new giftStore();
+      giftImage.set();
+      giftImage.set();
+      giftImage.save()
+      .then((giftImage) => {
+        // Execute any logic that should take place after the object is saved.
+        alert('New object created with objectId: ' + giftImage.id);
+      }, (error) => {
+        // Execute any logic that should take place if the save fails.
+        // error is a Parse.Error with an error code and message.
+        alert('Failed to create new object, with error code: ' + error.message);
+      });
+      */
+      // setup new item id i.e. unique time for now
+      this.$store.dispatch('addItem', this.takenImageUrl);
+      // lastly with image saved add item details
+      this.$router.push('/items/add/:id')
     },
     listPickups() {
       this.$router.push('/pickups')
