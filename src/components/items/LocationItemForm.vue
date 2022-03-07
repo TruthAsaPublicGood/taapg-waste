@@ -37,6 +37,16 @@
         <ion-label position="floating">Please add any additional information:</ion-label>
         <ion-textarea rows="5" v-model="enteredDescription"></ion-textarea>
       </ion-item>
+      <ion-item>
+        <ion-thumbnail slot="start">
+        </ion-thumbnail>
+        <ion-button type="button" fill="clear" @click="takeGPS">
+          Take GPS
+        </ion-button>
+        <ion-item id="gps-location">
+          {{ latitude }} {{ longitude }}
+        </ion-item>
+      </ion-item>
     </ion-list>
     <ion-button type="submit" expand="block">Save location</ion-button>
   </form>
@@ -55,6 +65,7 @@ import {
   IonIcon,
 } from "@ionic/vue";
 import { paw } from "ionicons/icons";
+import { Geolocation } from '@capacitor/geolocation';
 
 export default {
   emits: ["save-location"],
@@ -77,9 +88,22 @@ export default {
       date: "",
       slottime: "",
       enteredDescription: "",
+      takenGPS: '',
+      latitude: '',
+      longitude: ''
     };
   },
   methods: {
+    async takeGPS() {
+      const printCurrentPosition = async () => {
+        const coordinates = await Geolocation.getCurrentPosition();
+        return coordinates;
+      };
+      let gpsLive = await printCurrentPosition();
+      this.takenGPS = gpsLive;
+      this.latitude = gpsLive.coords.latitude;
+      this.longitude = gpsLive.coords.longitude;
+    },
     submitForm() {
       const locationData = {
         person: this.person,
@@ -87,6 +111,8 @@ export default {
         date: this.date,
         slottime: this.slottime,
         description: this.enteredDescription,
+        latitude: this.latitude,
+        longitude: this.longitude
       };
       this.$emit("save-location", locationData);
     },

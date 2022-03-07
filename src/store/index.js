@@ -24,7 +24,8 @@ const store = createStore({
       },
       pickups: [],
       items: [],
-      itemsStorage: [],
+      localStoreItems: [],
+      networkItems: [],
       itemInfo: [],
       itemLocation: [],
       mylistTags: ['bed', 'chair', 'desk'],
@@ -72,8 +73,8 @@ const store = createStore({
     },
     SET_addItem(state, itemData) {
       let newItem = {}
-      newItem.imgurl = itemData
-      newItem.id = new Date().toISOString(),
+      newItem.imgurl = itemData.imageURL
+      newItem.id = itemData.id, // new Date().toISOString(),
       state.items.push(newItem);
       state.currentItem = newItem.id
       state.groupItemInfo[newItem.id] = []
@@ -95,10 +96,13 @@ const store = createStore({
       matchList.item = state.items.find((memory) => memory.id === state.currentItem);
       matchList.iteminfo = state.itemInfo.find((memory) => memory.id === itemGroup[0]);
       matchList.itemlocation = state.itemLocation.find((memory) => memory.id === itemGroup[1]);
-      console.log('item data')
-      console.log(matchList)
       let bundleJSON = JSON.stringify(matchList)
-      console.log(state.authData)
+      // add item details to localstorage to track item photos and details
+      let updateStorageIndex = state.localStoreItems.push(bundleJSON)
+      Storage.set({
+        key: this.PHOTO_STORAGE,
+        value: JSON.stringify(updateStorageIndex),
+      });
       // save ie upload to cloud
       Parse.serverURL = 'https://parseapi.back4app.com/';
       Parse.initialize("oLOAS9sx13Si3EM8tAZIebMBqVFyvhY7Q1tKuF2K", "J9a52hSWodE4QbDzxNeA33mOdUzimPdj7QUo3dJu");
@@ -114,7 +118,7 @@ const store = createStore({
 
     },
     SET_storageItems(state, update) {
-      state.localStoreItems = update
+      state.localStoreItems = JSON.parse(update)
     }
   },
   actions: {
@@ -231,9 +235,6 @@ const store = createStore({
     },
     async actionLocalStorageItems(context) {
       console.log('get local store info')
-      let localStoreItems = []
-      localStoreItems.push('mockdata')
-
       try{
         const photoList = await Storage.get({ key: 'gifts' });
         console.log('stored locally')

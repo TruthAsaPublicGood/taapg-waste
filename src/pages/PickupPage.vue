@@ -4,8 +4,13 @@
       <ion-button router-link="/pickups/add">
         <ion-icon slot="icon-only" :icon="add"></ion-icon>
       </ion-button>
-    </template>is {{ itemsStorage }}
-    <pickups-list :itemss="items"></pickups-list>
+    </template>
+    Today
+    <pickups-list :items="items"></pickups-list>
+    Older items
+    <pickups-list :items="itemsStorage"></pickups-list>
+    Cooperative items
+    <pickups-list :items="networkItems"></pickups-list>
   </base-layout>
 </template>
 
@@ -33,6 +38,9 @@ export default {
     itemsStorage() {
       return this.$store.state.localStoreItems;
     },
+    networkItems() {
+      return this.$store.state.networkItems;
+    }
   },
   mounted(){
     this.localStorage()

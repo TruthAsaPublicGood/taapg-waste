@@ -182,6 +182,7 @@ export default {
 
       // save ie upload to cloud
       const saveImage = new Parse.Object("gifts");
+      saveImage.set("itemid", fileName);
       saveImage.set("giftpic", file);
       saveImage.set("peer", this.getAuthData.peerName);
       // saveImage.set("imginfo", file);
@@ -207,7 +208,10 @@ export default {
       });
       */
       // setup new item id i.e. unique time for now
-      this.$store.dispatch('addItem', this.takenImageUrl);
+      let imgID = {}
+      imgID.id = fileName
+      imgID.imageURL = this.takenImageUrl
+      this.$store.dispatch('addItem', imgID);
       // lastly with image saved add item details
       this.$router.push('/items/add/:id')
     },
