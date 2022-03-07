@@ -1,10 +1,10 @@
 <template>
   <ion-item :router-link="`/pickups/${pickupdetail.id}`">
     <ion-thumbnail slot="start">
-      <ion-img :src="pickupdetail.image" :alt="pickupdetail.title"></ion-img>
+      <ion-img :src="pickupdetail.imgurl" :alt="pickupdetail.id"></ion-img>
     </ion-thumbnail>
     <ion-label>
-      dd {{ pickupdetail.title }}
+      {{ pickupdetail.id }}
     </ion-label>
   </ion-item>
 </template>

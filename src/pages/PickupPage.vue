@@ -28,7 +28,7 @@ export default {
   },
   computed: {
     pickups() {
-      return this.$store.getters.pickups;
+      return this.$store.getters.items;
     },
   },
 };

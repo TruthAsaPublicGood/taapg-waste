@@ -13,7 +13,7 @@
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
-    <ion-content @savePickup="saveSetPickup">
+    <ion-content>
       <slot />
     </ion-content>
   </ion-page>
@@ -42,11 +42,6 @@ export default {
     IonButtons,
   },
   methods: {
-    saveSetPickup(pickupData) {
-      console.log('based page')
-      this.$store.dispatch('addPickup', pickupData);
-      // this.$router.replace('/pickups');
-    }
   }
 };
 </script>

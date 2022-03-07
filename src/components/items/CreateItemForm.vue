@@ -3,9 +3,9 @@
     <ion-list>
       <ion-item>
         <ion-label>choose item type</ion-label>
-        <ion-select value="">
+        <ion-select interface="popover" value="" v-model="itemType">
           <ion-select-option value="twinmat">Twin mattress</ion-select-option>
-          <ion-select-option value="qmat">Quenn mattress</ion-select-option>
+          <ion-select-option value="qmat">Queen mattress</ion-select-option>
           <ion-select-option value="bedframe">Bed frame</ion-select-option>
           <ion-select-option value="table">Table</ion-select-option>
           <ion-select-option value="chairs">Chairs</ion-select-option>
@@ -15,7 +15,7 @@
       <ion-item>paw
         <ion-icon slot="icon-only" :icon="paw"></ion-icon>
         <ion-label>Coming from home with pets?</ion-label>
-        <ion-select value="">
+        <ion-select interface="popover" value="" v-model="pets">
           <ion-select-option value="yes">yes</ion-select-option>
           <ion-select-option value="no">no</ion-select-option>
         </ion-select>
@@ -23,7 +23,7 @@
       <ion-item>smoker
         <ion-icon slot="icon-only" :icon="paw"></ion-icon>
         <ion-label>Smoking home?</ion-label>
-        <ion-select value="">
+        <ion-select interface="popover" value="" v-model="smoker">
           <ion-select-option value="yes">yes</ion-select-option>
           <ion-select-option value="no">no</ion-select-option>
         </ion-select>
@@ -33,7 +33,7 @@
         <ion-textarea rows="5" v-model="enteredDescription"></ion-textarea>
       </ion-item>
     </ion-list>
-    <ion-button type="submit" expand="block">next Location</ion-button>
+    <ion-button type="submit" expand="block">Next location</ion-button>
   </form>
 </template>
 
@@ -42,6 +42,8 @@ import {
   IonList,
   IonItem,
   IonLabel,
+  IonSelect,
+  IonSelectOption,
   IonTextarea,
   IonButton,
   IonIcon,
@@ -54,6 +56,8 @@ export default {
     IonList,
     IonItem,
     IonLabel,
+    IonSelect,
+    IonSelectOption,
     IonTextarea,
     IonButton,
     IonIcon,
@@ -61,13 +65,21 @@ export default {
   data() {
     return {
       paw,
-      enteredTitle: "",
+      itemType: "",
+      pets: false,
+      smoker: false,
       enteredDescription: "",
     };
   },
   methods: {
     submitForm() {
-      this.$router.replace('/items/location/');
+      const itemData = {
+        itemType: this.itemType,
+        pets: this.pets,
+        smoke: this.smoker,
+        itemInfo: this.enteredDescription,
+      };
+      this.$emit("save-item", itemData);
     },
   },
 };

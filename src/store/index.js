@@ -14,43 +14,16 @@ const store = createStore({
         peerId: 0,
         peerName: "AJ",
       },
+      currentItem: '',
       currentPickup: 'ppl1',
-      pairPickupItems: {
-        'ppl1': ['m1', 'm2']
+      groupItemInfo: {
       },
-      pickups: [
-        {
-          id: 'ppl1',
-          location: 'zip',
-          image:
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Plastic_Tuinstoel.jpg/300px-Plastic_Tuinstoel.jpg',
-          title: 'Pickup first',
-          description: 'home clearence',
-        },
-      ],
-      items: [
-        {
-          id: 'm1',
-          image:
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Plastic_Tuinstoel.jpg/300px-Plastic_Tuinstoel.jpg',
-          title: 'Chair',
-          description: 'Good condiction desk chair',
-        },
-        {
-          id: 'm2',
-          image:
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Tutankhamun%27s_bed_%28Cairo_Museum%29.jpg/330px-Tutankhamun%27s_bed_%28Cairo_Museum%29.jpg',
-          title: 'Bed',
-          description: 'Reasonable condition wooden frame',
-        },
-        {
-          id: 'm3',
-          image:
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Indian_-_Food.jpg/640px-Indian_-_Food.jpg',
-          title: 'Kitchen Table',
-          description: 'Medium size food table',
-        },
-      ],
+      pairPickupItems: {
+      },
+      pickups: [],
+      items: [],
+      itemInfo: [],
+      itemLocation: [],
       mylistTags: ['bed', 'chair', 'desk'],
       beds:
       [
@@ -95,14 +68,24 @@ const store = createStore({
       state.pickups.push(newPickup);
     },
     SET_addItem(state, itemData) {
-      const newItem = {
-        id: new Date().toISOString(),
-        title: itemData.title,
-        image: itemData.imageUrl,
-        description: itemData.description
-      };
+      let newItem = {}
+      newItem.imgurl = itemData
+      newItem.id = new Date().toISOString(),
       state.items.push(newItem);
-      state.pairPickupItems[state.currentPickup].push(newItem.id)
+      state.currentItem = newItem.id
+      state.groupItemInfo[newItem.id] = []
+    },
+    SET_addItemInfo(state, itemData) {
+      let newItemInfo = itemData
+      newItemInfo.id = new Date().toISOString(),
+      state.itemInfo.push(newItemInfo);
+      state.groupItemInfo[state.currentItem].push(newItemInfo.id)
+    },
+    SET_addLocation(state, locationData) {
+      const newLocation = locationData
+      newLocation.id = new Date().toISOString(),
+      state.itemLocation.push(newLocation);
+      state.groupItemInfo[state.currentItem].push(newLocation.id)
     }
   },
   actions: {
@@ -131,7 +114,9 @@ const store = createStore({
       async function peerLogin() {
         try {
           // Pass the username and password to logIn function
-          let user = await Parse.User.logIn(payload.peer, payload.pw);
+          const peer = payload.peer.trim()
+          const pw = payload.pw.trim()
+          let user = await Parse.User.logIn(peer, pw);
           // Do stuff after successful login
           if (user.get('sessionToken')) {
             context.commit("SET_saveAuthToken", user.get('sessionToken'));
@@ -206,6 +191,12 @@ const store = createStore({
     addItem(context, itemData) {
       context.commit('SET_addItem', itemData);
     },
+    addItemInfo(context, itemData) {
+      context.commit('SET_addItemInfo', itemData);
+    },
+    addLocation(context, itemData) {
+      context.commit('SET_addLocation', itemData);
+    },
     addPickup(context, update) {
     context.commit('SET_addPickup', update);
     }
@@ -220,9 +211,24 @@ const store = createStore({
     pickups(state) {
       return state.pickups;
     },
+    itemMatcher(state) {
+      return (memoryId) => {
+        return state.items.find((memory) => memory.id === memoryId);
+      };
+    },
     pickup(state) {
       return (memoryId) => {
         return state.pickups.find((memory) => memory.id === memoryId);
+      };
+    },
+    matcherGroupItems (state) {
+      return (memoryId) => {
+        let itemGroup = state.groupItemInfo[memoryId]
+        // loop over and match to items
+        let matchList = {}
+        matchList.iteminfo = state.itemInfo.find((memory) => memory.id === itemGroup[0]);
+        matchList.itemlocation = state.itemLocation.find((memory) => memory.id === itemGroup[1]);
+        return matchList
       };
     },
     matcherPickItems (state) {

@@ -1,35 +1,35 @@
 <template>
   <base-layout
-    :page-title="loadedItems ? loadedItems.title : 'Loading...'"
+    :page-title="loadedItems ? loadedItems.id: 'Loading...'"
     page-default-back-link="/pickups"
   >
     <h2 v-if="!loadedItems">Could not find a memory for the given id.</h2>
-    <item-list-item
-      v-for="pi in matchPickItems"
-      :key="pi.id"
-      :itemdetail="pi"
-    ></item-list-item>
+    <item-detail
+      :itemDetail="loadedItems"
+      :itemInfo="matchGroupItems"
+    ></item-detail>
   </base-layout>
 </template>
 
 <script>
-import ItemListItem from "@/components/items/ItemListItem.vue";
+import ItemDetail from "@/components/items/ItemOverviewLong.vue";
 
 export default {
   components: {
-    ItemListItem
+    ItemDetail
     // ItemOverview,
   },
   computed: {
     loadedItems() {
-      return this.$store.getters.pickup(this.memoryId);
+      return this.$store.getters.itemMatcher(this.memoryId);
     },
-    matchPickItems() {
+    matchGroupItems() {
+      return this.$store.getters.matcherGroupItems(this.memoryId);
+    },
+    /* matchPickItems() {
+      console.log(this.$store.getters.matcherPickItems(this.memoryId))
       return this.$store.getters.matcherPickItems(this.memoryId);
-    },
-    pairItems: function () {
-      return this.$store.state.pairPickupItems[this.loadedItems.id]
-    }
+    } */
   },
   data() {
     return {

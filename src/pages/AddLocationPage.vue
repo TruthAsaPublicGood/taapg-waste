@@ -1,6 +1,6 @@
 <template>
   <base-layout page-title="location" page-default-back-link="/pickups/:id">
-    <location-item-form @save-item="save"></location-item-form>
+    <location-item-form @save-location="saveLocation"></location-item-form>
   </base-layout>
 </template>
 
@@ -12,9 +12,9 @@ export default {
     LocationItemForm,
   },
   methods: {
-    saveItem(itemData) {
-      this.$store.dispatch('addItem', itemData);
-      this.$router.replace('/members');
+    saveLocation(locationData) {
+      this.$store.dispatch('addLocation', locationData);
+      this.$router.replace('/member');
     }
   }
 };

@@ -75,11 +75,9 @@ export default {
       this.peerInfo.pw = ''
     },
     agreeTerms () {
-      console.log('view holism-DSC')
       this.$router.push('/holismdsc')
     },
     aboutTruth () {
-      console.log('view holism-DSC')
       this.$router.push('/about')
     }
   },

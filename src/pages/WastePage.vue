@@ -13,16 +13,16 @@
             <ion-label>{{ getAuthData.peerName }}</ion-label>
           </ion-item>
         </ion-card-content>
-    </ion-card>
+     </ion-card>
     </div>
     <div class="collection-button">
       <ion-button @click="takePhoto">
         <ion-icon slot="icon-only" :icon="camera"></ion-icon>
-        New collection
+        New item
       </ion-button>
     </div>
     <div class="collection-button">
-      <ion-button @click="listPickups">Pickup history</ion-button>
+      <ion-button @click="listPickups">History</ion-button>
     </div>
     <!-- <div>
       <button @click="tagLabalCloud">tagCloud</button>
@@ -47,6 +47,7 @@ import { IonCard, IonCardContent, IonLabel, IonItem, IonButton, IonIcon, IonImg}
 import { add, camera } from "ionicons/icons";
 import { mapGetters } from "vuex";
 import { Camera, CameraResultType } from '@capacitor/camera';
+import { Filesystem, Directory } from '@capacitor/filesystem';
 import Parse from 'parse';
 
 export default {
@@ -94,20 +95,23 @@ export default {
       var imageUrl = takenImage.webPath;
       // Can be set to the src of an image now
       this.takenImageUrl = imageUrl;
-      console.log('photo taken')
       this.saveParseImage()
     },
+    async saveLocalImage() {
+      // Write the file to the data directory
+      const fileName = new Date().getTime() + '.jpeg';
+      const savedFile = await Filesystem.writeFile({
+        path: fileName,
+        data: this.takenImageUrl,
+        directory: Directory.Data
+      });
+      console.log(savedFile)
+    },
     saveParseImage() {
-      console.log('start of save')
-      this.$router.push('/items/add/:id')
       Parse.serverURL = 'https://parseapi.back4app.com/';
       Parse.initialize("oLOAS9sx13Si3EM8tAZIebMBqVFyvhY7Q1tKuF2K", "J9a52hSWodE4QbDzxNeA33mOdUzimPdj7QUo3dJu");
-      let install = new Parse.Installation();
-      console.log(install)
       const base64 = "V29ya2luZyBhdCBQYXJzZSBpcyBncmVhdCE=";
       const file = new Parse.File("myfile1.txt", { base64: base64 });
-      console.log('file saved?')
-      console.log(file)
       file.save().then(function() {
         // The file has been saved to Parse.
         console.log('file saved')
@@ -121,7 +125,6 @@ export default {
       saveImage.set("giftpic", file);
       // saveImage.set("imginfo", file);
       saveImage.save().then(function(data) {
-        console.log('saved objemct')
         console.log(data)
       }, function(error) {
         console.log(error)
@@ -144,24 +147,34 @@ export default {
         alert('Failed to create new object, with error code: ' + error.message);
       });
       */
+      // setup new item id i.e. unique time for now
+      this.$store.dispatch('addItem', this.takenImageUrl);
+      // lastly with image saved add item details
+      this.$router.push('/items/add/:id')
     },
-    submitForm() {
-      const itemData = {
-        title: this.enteredTitle,
-        imageUrl: this.takenImageUrl,
-        description: this.enteredDescription,
-      };
-      this.$emit("save-item", itemData);
+    async getImageLocal() {
+      let localImage = await this.readAsBase64('d')
+      console.log(localImage)
+    },
+    async readAsBase64(photo) {
+      // Fetch the photo, read as a blob, then convert to base64 format
+      const response = await fetch(photo.webPath);
+      const blob = await response.blob();
+      return await this.convertBlobToBase64(blob);
+    },
+    async convertBlobToBase64(blob) {
+      let convertB64 = new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = reject;
+        reader.onload = () => {
+            resolve(reader.result);
+        };
+        reader.readAsDataURL(blob);
+      });
+      return convertB64
     },
     listPickups() {
       this.$router.push('/pickups')
-    },
-    newPickup() {
-      // this.$router.push('/pickups/add')
-      this.$router.push('/items/add/:id')
-    },
-    createMylist () {
-      this.$router.push('/mylists')
     },
     agreeTerms () {
       this.$router.push('/holismdsc')
