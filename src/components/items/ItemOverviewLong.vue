@@ -36,6 +36,11 @@
         <ion-label>Time:</ion-label>
         <ion-label>{{ itemInfo.itemlocation.slottime }}</ion-label>
       </ion-item>
+      <ion-item>
+        <ion-label>Location:</ion-label>
+        <ion-label>{{ itemInfo.itemlocation.latitude }}</ion-label>
+        <ion-label>{{ itemInfo.itemlocation.longitude }}</ion-label>
+      </ion-item>
     </ion-card-content>
  </ion-card>
 </template>

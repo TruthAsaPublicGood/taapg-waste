@@ -11,8 +11,13 @@
         <ion-input type="text" required v-model="telephone" />
       </ion-item>
       <ion-item>
-        <ion-icon slot="icon-only" :icon="paw"></ion-icon>
         <ion-label>Date</ion-label>
+        <!-- Selecting time, no date -->
+        <ion-datetime presentation="time"></ion-datetime>
+      </ion-item>
+      <ion-item>
+        <ion-icon slot="icon-only" :icon="paw"></ion-icon>
+        <ion-label>Day</ion-label>
         <ion-select interface="popover" value="" v-model="date">
           <ion-select-option value="monday">Monday</ion-select-option>
           <ion-select-option value="tuesday">Tuesday</ion-select-option>
@@ -35,7 +40,9 @@
       </ion-item>
       <ion-item>
         <ion-label position="floating">Please add any additional information:</ion-label>
-        <ion-textarea rows="5" v-model="enteredDescription"></ion-textarea>
+        <ion-textarea rows="5" v-model="enteredDescription">
+          dd {{ customDatetime }}
+        </ion-textarea>
       </ion-item>
       <ion-item>
         <ion-thumbnail slot="start">
@@ -63,9 +70,13 @@ import {
   IonTextarea,
   IonButton,
   IonIcon,
+  IonThumbnail,
+  IonDatetime
 } from "@ionic/vue";
 import { paw } from "ionicons/icons";
 import { Geolocation } from '@capacitor/geolocation';
+// import { format, parseISO } from 'date-fns';
+import { ref } from 'vue';
 
 export default {
   emits: ["save-location"],
@@ -79,6 +90,8 @@ export default {
     IonTextarea,
     IonButton,
     IonIcon,
+    IonThumbnail,
+    IonDatetime
   },
   data() {
     return {
@@ -90,7 +103,8 @@ export default {
       enteredDescription: "",
       takenGPS: '',
       latitude: '',
-      longitude: ''
+      longitude: '',
+      customDatetime: ref()
     };
   },
   methods: {
@@ -104,6 +118,17 @@ export default {
       this.latitude = gpsLive.coords.latitude;
       this.longitude = gpsLive.coords.longitude;
     },
+    /* confirm() {
+      if (this.customDatetime.value === undefined) return;
+      this.customDatetime.value.$el.confirm();
+    },
+    reset() {
+      if (this.customDatetime.value === undefined) return;
+      this.customDatetime.value.$el.reset();
+    },
+    formatDate(value) {
+      return format(parseISO(value), 'MMM dd yyyy');
+    }, */
     submitForm() {
       const locationData = {
         person: this.person,
