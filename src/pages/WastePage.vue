@@ -216,6 +216,8 @@ export default {
       this.$router.push('/items/add/:id')
     },
     listPickups() {
+      // go to network and get items available
+      this.$store.dispatch('actionNetwokitems');
       this.$router.push('/pickups')
     },
     agreeTerms () {

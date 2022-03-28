@@ -1,5 +1,5 @@
 <template>
-  <ion-list>
+  <ion-list>ii {{ items }}
     <pickup-list-item
       v-for="item in items"
       :key="item.id"

@@ -10,7 +10,7 @@
     Older items
     <pickups-list :items="itemsStorage"></pickups-list>
     Cooperative items
-    <pickups-list :items="networkItems"></pickups-list>
+    <pickups-list :items="coopitems"></pickups-list>
   </base-layout>
 </template>
 
@@ -35,11 +35,11 @@ export default {
     items() {
       return this.$store.getters.items;
     },
+    coopitems() {
+      return this.$store.getters.coopitems;
+    },
     itemsStorage() {
       return this.$store.state.localStoreItems;
-    },
-    networkItems() {
-      return this.$store.state.networkItems;
     }
   },
   mounted(){

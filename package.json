@@ -2,7 +2,7 @@
   "name": "taapg-circular",
   "version": "0.0.1",
   "private": true,
-  "description": "An Ionic project",
+  "description": "Circular App - Truth as a Public Good",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",

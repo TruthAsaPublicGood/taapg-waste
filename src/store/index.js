@@ -119,6 +119,9 @@ const store = createStore({
     },
     SET_storageItems(state, update) {
       state.localStoreItems = JSON.parse(update)
+    },
+    SET_NEWTORK_ITEMS(state, update) {
+      state.networkItems = update
     }
   },
   actions: {
@@ -163,7 +166,6 @@ const store = createStore({
         }
       }
       await peerLogin()
-
         // Reading your First Data Object from Back4App
       /* async function retrievePerson() {
         const query = new Parse.Query("User");
@@ -257,6 +259,66 @@ const store = createStore({
         });
         photo.webviewPath = `data:image/jpeg;base64,${file.data}`;
       } */
+    },
+    async actionNetwokitems(context) {
+      let networkItems = []
+      // call cloud
+      Parse.serverURL = 'https://parseapi.back4app.com/';
+      Parse.initialize("oLOAS9sx13Si3EM8tAZIebMBqVFyvhY7Q1tKuF2K", "J9a52hSWodE4QbDzxNeA33mOdUzimPdj7QUo3dJu");
+
+      async function retrieveCoopPicItems() {
+        const query = new Parse.Query("gifts");
+
+        try {
+          const coopItems = await query.find()
+            return coopItems;
+        } catch (error) {
+          console.log(error)
+        }
+      }
+
+      async function retrieveCoopItems() {
+        const query = new Parse.Query("itemdetails");
+
+        try {
+          const coopItems = await query.find()
+            return coopItems;
+        } catch (error) {
+          console.log(error)
+        }
+      }
+
+      let cloudPicItems = await retrieveCoopPicItems()
+      let cloudItems = await retrieveCoopItems()
+      let buildData = []
+      for (let ditem of cloudItems) {
+        let detailGift = ditem.get('giftdetails')
+        // console.log(JSON.parse(detailGift))
+        buildData.push(JSON.parse(detailGift))
+      }
+      // extract image details
+      let buildImage = []
+      for (let ditem of cloudPicItems) {
+        let imageDetail = {}
+        imageDetail.id = ditem.get('itemid')
+        imageDetail.peer = ditem.get('peer')
+        imageDetail.url = ditem.get('giftpic')
+        buildImage.push(imageDetail)
+      }
+      // prepare data structure for presentation
+      for (let dplay of buildData) {
+        let displayObject = {}
+        displayObject.id = dplay.item.id
+        // need to switch to cloud url for image
+        let imgURLcloud = buildImage.find((pic) => pic.id === dplay.item.id);
+        if (imgURLcloud !== undefined) {
+          displayObject.imgurl = imgURLcloud.url._url
+          displayObject.iteminfo = dplay.item.iteminfo
+          displayObject.itemlocation = dplay.item.itemlocation
+          networkItems.push(displayObject)
+        }
+      }
+      context.commit('SET_NEWTORK_ITEMS', networkItems);
     }
   },
   getters: {
@@ -312,6 +374,9 @@ const store = createStore({
       return (memoryId) => {
         return state.items.find((memory) => memory.id === memoryId);
       };
+    },
+    coopitems(state) {
+      return state.networkItems;
     },
     tags(state) {
       return state.mylistTags
