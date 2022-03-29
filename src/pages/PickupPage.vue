@@ -10,7 +10,7 @@
     Older items
     <pickups-list :items="itemsStorage"></pickups-list>
     Cooperative items
-    <pickups-list :items="coopitems"></pickups-list>
+    <pickups-list :items="coopitems" :type="coopnetwork"></pickups-list>
   </base-layout>
 </template>
 
@@ -28,7 +28,8 @@ export default {
   },
   data() {
     return {
-      add
+      add,
+      coopnetwork: 'network'
     };
   },
   computed: {
@@ -47,7 +48,7 @@ export default {
   },
   methods: {
     localStorage() {
-      this.$store.dispatch('actionLocalStorageItems')
+      // this.$store.dispatch('actionLocalStorageItems')
     }
   }
 };

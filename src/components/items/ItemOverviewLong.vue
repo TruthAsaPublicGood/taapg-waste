@@ -17,7 +17,7 @@
  </ion-card>
   <ion-img :src="itemDetail.imgurl" :alt="itemDetail.itemType"></ion-img>
   <h2 class="ion-text-center">{{ itemDetail.itemType }}</h2>
-  <p class="ion-text-center">{{ itemDetail.iteminfo }}</p>
+  <!--<p class="ion-text-center">{{ itemDetail.iteminfo }}</p> -->
   <ion-card>
     <ion-card-content>
       <ion-item>

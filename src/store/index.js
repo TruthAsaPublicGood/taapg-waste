@@ -313,8 +313,8 @@ const store = createStore({
         let imgURLcloud = buildImage.find((pic) => pic.id === dplay.item.id);
         if (imgURLcloud !== undefined) {
           displayObject.imgurl = imgURLcloud.url._url
-          displayObject.iteminfo = dplay.item.iteminfo
-          displayObject.itemlocation = dplay.item.itemlocation
+          displayObject.iteminfo = dplay.iteminfo
+          displayObject.itemlocation = dplay.itemlocation
           networkItems.push(displayObject)
         }
       }
@@ -331,14 +331,24 @@ const store = createStore({
     pickups(state) {
       return state.pickups;
     },
-    itemMatcher(state) {
-      return (memoryId) => {
-        return state.items.find((memory) => memory.id === memoryId);
-      };
-    },
     pickup(state) {
       return (memoryId) => {
         return state.pickups.find((memory) => memory.id === memoryId);
+      };
+    },
+    networkMatcher(state) {
+      return (giftId) => {
+        return state.networkItems.find((memory) => memory.id === giftId);
+      }
+    },
+    networkMatcherDetail(state) {
+      return (giftId) => {
+        return state.networkItems.find((memory) => memory.id === giftId);
+      }
+    },
+    itemMatcher(state) {
+      return (memoryId) => {
+        return state.items.find((memory) => memory.id === memoryId);
       };
     },
     matcherGroupItems (state) {

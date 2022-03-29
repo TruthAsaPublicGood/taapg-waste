@@ -29,7 +29,7 @@ const routes = [
     meta: { requiredAuth: true },
   },
   {
-    path: '/pickups/:id',
+    path: '/pickups/:id/type/:ty',
     component: () => import('../pages/PickupDetailsPage.vue'),
     meta: { requiredAuth: true },
   },

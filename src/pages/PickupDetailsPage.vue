@@ -21,24 +21,33 @@ export default {
   },
   computed: {
     loadedItems() {
-      return this.$store.getters.itemMatcher(this.memoryId);
+      if (this.typeId === 'network') {
+        return this.$store.getters.networkMatcher(this.giftId);
+      } else {
+        return this.$store.getters.itemMatcher(this.giftId);
+      }
     },
     matchGroupItems() {
-      return this.$store.getters.matcherGroupItems(this.memoryId);
+      if (this.typeId === 'network') {
+        return this.$store.getters.networkMatcherDetail(this.giftId);
+      } else {
+        return this.$store.getters.matcherGroupItems(this.giftId);
+      }
     },
     /* matchPickItems() {
-      console.log(this.$store.getters.matcherPickItems(this.memoryId))
-      return this.$store.getters.matcherPickItems(this.memoryId);
+      console.log(this.$store.getters.matcherPickItems(this.giftId))
+      return this.$store.getters.matcherPickItems(this.giftId);
     } */
   },
   data() {
     return {
-      memoryId: this.$route.params.id,
+      giftId: this.$route.params.id,
+      typeId: this.$route.params.ty
     };
   },
   // watch: {
   //   $route(currentRoute) {
-  //     this.memoryId = currentRoute.params.id;
+  //     this.giftId = currentRoute.params.id;
   //   },
   // },
 };
